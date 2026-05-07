@@ -40,17 +40,18 @@
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
 
-            <Button Grid.Column="2"
-                    x:Name="OpenExternalBtn"
-                    Text="Open"
-                    Clicked="OnOpenExternalClicked"
-                    BackgroundColor="White"
-                    TextColor="{StaticResource Primary}"
-                    FontSize="13"
-                    CornerRadius="6"
-                    HeightRequest="34"
-                    Padding="12,0"
-                    IsVisible="False" />
+            <HorizontalStackLayout Grid.Column="2" Spacing="8" VerticalOptions="Center">
+                <Button x:Name="OcrBtn"
+                        Text="FlyOCR"
+                        Clicked="OnOcrModeToggled"
+                        BackgroundColor="White"
+                        TextColor="{StaticResource Primary}"
+                        FontSize="13"
+                        CornerRadius="6"
+                        HeightRequest="34"
+                        Padding="12,0"
+                        IsVisible="False" />
+            </HorizontalStackLayout>
         </Grid>
 
         <!-- Content -->
@@ -71,7 +72,7 @@
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
 
-            <!-- Syncfusion PDF Viewer — shown after conversion -->
+            <!-- Syncfusion PDF Viewer -->
             <pdf:SfPdfViewer x:Name="PdfViewer"
                              IsVisible="False" />
 
@@ -94,13 +95,6 @@
                        FontSize="13"
                        TextColor="{StaticResource Gray400}"
                        HorizontalTextAlignment="Center" />
-                <Button Text="Open with default app"
-                        Clicked="OnOpenExternalClicked"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="White"
-                        CornerRadius="8"
-                        HeightRequest="44"
-                        Margin="0,8,0,0" />
             </VerticalStackLayout>
 
             <!-- Error -->
@@ -118,6 +112,34 @@
                        HorizontalTextAlignment="Center"
                        Padding="32,0" />
             </VerticalStackLayout>
+
+            <!-- Crop overlay — rendered on top of PdfViewer when OCR mode is active -->
+            <GraphicsView x:Name="CropCanvas"
+                          IsVisible="False"
+                          InputTransparent="False"
+                          BackgroundColor="Transparent">
+                <GraphicsView.GestureRecognizers>
+                    <PointerGestureRecognizer
+                        PointerPressed="OnCropPointerPressed"
+                        PointerMoved="OnCropPointerMoved"
+                        PointerReleased="OnCropPointerReleased" />
+                    <PanGestureRecognizer
+                        PanUpdated="OnCropPanUpdated" />
+                </GraphicsView.GestureRecognizers>
+            </GraphicsView>
+
+            <!-- OCR instruction banner — sits at top of content, above crop canvas -->
+            <Border x:Name="OcrBanner"
+                    IsVisible="False"
+                    BackgroundColor="#CC000000"
+                    StrokeThickness="0"
+                    Padding="16,10"
+                    VerticalOptions="Start">
+                <Label Text="Draw a rectangle over the text you want to extract  ·  tap Cancel OCR to exit"
+                       TextColor="White"
+                       FontSize="12"
+                       HorizontalTextAlignment="Center" />
+            </Border>
 
         </Grid>
     </Grid>
