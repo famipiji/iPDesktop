@@ -31,12 +31,6 @@
                    HorizontalOptions="Center"
                    VerticalOptions="Center" />
 
-            <Label Grid.Column="2"
-                   x:Name="DocCountLabel"
-                   Text="0 documents"
-                   FontSize="13"
-                   TextColor="{StaticResource Secondary}"
-                   VerticalOptions="Center" />
         </Grid>
 
         <!-- Search bar -->

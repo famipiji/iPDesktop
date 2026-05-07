@@ -1,23 +1,24 @@
 using iPDesktop.Data;
 using iPDesktop.Models;
+using iPDesktop.Services;
 
 namespace iPDesktop;
 
 [QueryProperty(nameof(DocId), "docId")]
 public partial class DocumentPreviewPage : ContentPage
 {
-    private readonly DatabaseService _db;
+    private readonly DatabaseService   _db;
+    private readonly DocumentConverter _converter;
     private Document? _document;
-
-    private static readonly HashSet<string> ImageTypes = ["JPG", "JPEG", "PNG", "GIF", "BMP", "WEBP", "TIFF", "TIF", "ICO", "SVG"];
-    private static readonly HashSet<string> TextTypes  = ["TXT", "MD", "CSV", "LOG", "JSON", "XML", "HTML", "HTM", "YAML", "YML", "CS", "JS", "TS", "PY", "CSS"];
+    private Stream?   _pdfStream;
 
     public int DocId { get; set; }
 
-    public DocumentPreviewPage(DatabaseService db)
+    public DocumentPreviewPage(DatabaseService db, DocumentConverter converter)
     {
         InitializeComponent();
-        _db = db;
+        _db        = db;
+        _converter = converter;
     }
 
     protected override async void OnAppearing()
@@ -30,7 +31,6 @@ public partial class DocumentPreviewPage : ContentPage
     {
         ShowOnly(LoadingView);
 
-        // Fetch metadata from SQLite (single row by PK — instant)
         _document = await _db.GetDocumentByIdAsync(DocId);
 
         if (_document is null)
@@ -39,8 +39,9 @@ public partial class DocumentPreviewPage : ContentPage
             return;
         }
 
-        FileNameLabel.Text = _document.FileName;
-        FileMetaLabel.Text  = $"{_document.FileType}  ·  {_document.SizeDisplay}  ·  {_document.UploadedAt:dd MMM yyyy}";
+        FileNameLabel.Text        = _document.FileName;
+        FileMetaLabel.Text        = $"{_document.FileType}  ·  {_document.SizeDisplay}  ·  {_document.UploadedAt:dd MMM yyyy}";
+        OpenExternalBtn.IsVisible = File.Exists(_document.StoragePath);
 
         if (!File.Exists(_document.StoragePath))
         {
@@ -48,85 +49,57 @@ public partial class DocumentPreviewPage : ContentPage
             return;
         }
 
-        OpenExternalBtn.IsVisible = true;
-
-        var type = _document.FileType.ToUpper();
-
-        try
+        if (!_converter.CanConvert(_document.FileType))
         {
-            if (ImageTypes.Contains(type))
-                await ShowImageAsync(_document.StoragePath);
-            else if (type == "PDF")
-                ShowPdf(_document.StoragePath);
-            else if (TextTypes.Contains(type))
-                await ShowTextAsync(_document.StoragePath);
-            else
-                ShowGeneric(_document);
+            UnsupportedLabel.Text     = _document.FileName;
+            OpenExternalBtn.IsVisible = false;
+            ShowOnly(UnsupportedView);
+            return;
         }
-        catch (Exception ex)
+
+        // Convert to PDF on background thread — only runs when user taps the document
+        var (pdfStream, convertError) = await _converter.ConvertToPdfAsync(_document.StoragePath, _document.FileType);
+
+        if (convertError is not null)
         {
-            ShowError($"Could not load preview:\n{ex.Message}");
+            ShowError(convertError);
+            return;
         }
-    }
 
-    private async Task ShowImageAsync(string path)
-    {
-        // Read file bytes on background thread — never blocks UI
-        var bytes = await Task.Run(() => File.ReadAllBytes(path));
-        PreviewImage.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
-        ShowOnly(ImageView);
-    }
+        _pdfStream = pdfStream;
 
-    private void ShowPdf(string path)
-    {
-        var uri = new Uri(path).AbsoluteUri;
-        PdfView.Source = new UrlWebViewSource { Url = uri };
-        ShowOnly(PdfView);
-    }
-
-    private async Task ShowTextAsync(string path)
-    {
-        // Read on background thread to keep UI responsive for large files
-        var content = await Task.Run(() =>
+        if (_pdfStream is null || _pdfStream == Stream.Null)
         {
-            const int maxChars = 50_000;
-            using var reader = new StreamReader(path);
-            var buffer = new char[maxChars];
-            var read = reader.Read(buffer, 0, maxChars);
-            var text = new string(buffer, 0, read);
-            return reader.EndOfStream ? text : text + "\n\n[Showing first 50,000 characters…]";
-        });
+            UnsupportedLabel.Text     = _document.FileName;
+            OpenExternalBtn.IsVisible = false;
+            ShowOnly(UnsupportedView);
+            return;
+        }
 
-        TextContent.Text = content;
-        ShowOnly(TextView);
+        // Feed the PDF stream to Syncfusion — viewer handles paging, zoom, scroll
+        PdfViewer.DocumentSource = _pdfStream;
+        ShowOnly(PdfViewer);
     }
 
-    private void ShowGeneric(Document doc)
+    private void ShowOnly(View target)
     {
-        GenericFileName.Text = doc.FileName;
-        GenericMeta.Text     = $"{doc.FileType}  ·  {doc.SizeDisplay}";
-        OpenExternalBtn.IsVisible = false; // shown inside GenericView instead
-        ShowOnly(GenericView);
+        foreach (var v in new View[] { LoadingView, PdfViewer, UnsupportedView, ErrorView })
+            v.IsVisible = v == target;
     }
 
     private void ShowError(string message)
     {
-        ErrorLabel.Text = message;
+        ErrorLabel.Text           = message;
         OpenExternalBtn.IsVisible = false;
         ShowOnly(ErrorView);
     }
 
-    // Only one content area visible at a time — O(1), no rebind cost
-    private void ShowOnly(View target)
-    {
-        foreach (var v in new View[] { LoadingView, ImageView, PdfView, TextView, GenericView, ErrorView })
-            v.IsVisible = v == target;
-    }
-
     private async void OnBackClicked(object? sender, EventArgs e)
     {
-        // Free image bytes from memory when leaving
-        PreviewImage.Source = null;
+        // Unload PDF and free stream memory before navigating away
+        PdfViewer.DocumentSource = null;
+        _pdfStream?.Dispose();
+        _pdfStream = null;
         await Shell.Current.GoToAsync("..");
     }
 

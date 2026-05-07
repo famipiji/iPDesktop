@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pdf="clr-namespace:Syncfusion.Maui.PdfViewer;assembly=Syncfusion.Maui.PdfViewer"
              x:Class="iPDesktop.DocumentPreviewPage"
              Shell.NavBarIsVisible="False">
 
@@ -52,10 +53,10 @@
                     IsVisible="False" />
         </Grid>
 
-        <!-- Content area -->
+        <!-- Content -->
         <Grid Grid.Row="1">
 
-            <!-- Loading spinner — visible until preview loads -->
+            <!-- Loading -->
             <VerticalStackLayout x:Name="LoadingView"
                                  VerticalOptions="Center"
                                  HorizontalOptions="Center"
@@ -64,65 +65,35 @@
                                    Color="{StaticResource Primary}"
                                    WidthRequest="48"
                                    HeightRequest="48" />
-                <Label Text="Loading preview..."
+                <Label Text="Preparing PDF preview…"
                        FontSize="14"
                        TextColor="{StaticResource Gray400}"
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
 
-            <!-- Image preview -->
-            <ScrollView x:Name="ImageView" IsVisible="False">
-                <Image x:Name="PreviewImage"
-                       Aspect="AspectFit"
-                       Margin="16" />
-            </ScrollView>
+            <!-- Syncfusion PDF Viewer — shown after conversion -->
+            <pdf:SfPdfViewer x:Name="PdfViewer"
+                             IsVisible="False" />
 
-            <!-- PDF / HTML preview via WebView -->
-            <WebView x:Name="PdfView"
-                     IsVisible="False"
-                     Margin="0" />
-
-            <!-- Plain text preview -->
-            <ScrollView x:Name="TextView" IsVisible="False">
-                <Label x:Name="TextContent"
-                       FontFamily="OpenSansRegular"
-                       FontSize="13"
-                       TextColor="{StaticResource Gray900}"
-                       Padding="20"
-                       LineBreakMode="WordWrap" />
-            </ScrollView>
-
-            <!-- Generic / unsupported -->
-            <VerticalStackLayout x:Name="GenericView"
+            <!-- Unsupported file type -->
+            <VerticalStackLayout x:Name="UnsupportedView"
                                  IsVisible="False"
                                  VerticalOptions="Center"
                                  HorizontalOptions="Center"
                                  Spacing="16"
-                                 Padding="32">
-
-                <Label x:Name="GenericIcon"
-                       Text="📄"
+                                 Padding="40">
+                <Label Text="📄"
                        FontSize="64"
                        HorizontalTextAlignment="Center" />
-
-                <Label x:Name="GenericFileName"
-                       FontSize="16"
+                <Label x:Name="UnsupportedLabel"
+                       FontSize="15"
                        FontAttributes="Bold"
                        TextColor="{StaticResource Gray900}"
-                       HorizontalTextAlignment="Center"
-                       LineBreakMode="WordWrap" />
-
-                <Label x:Name="GenericMeta"
-                       FontSize="13"
-                       TextColor="{StaticResource Gray500}"
                        HorizontalTextAlignment="Center" />
-
-                <Label Text="No preview available for this file type."
+                <Label Text="No PDF preview available for this file type."
                        FontSize="13"
                        TextColor="{StaticResource Gray400}"
-                       HorizontalTextAlignment="Center"
-                       Margin="0,8,0,0" />
-
+                       HorizontalTextAlignment="Center" />
                 <Button Text="Open with default app"
                         Clicked="OnOpenExternalClicked"
                         BackgroundColor="{StaticResource Primary}"
@@ -132,7 +103,7 @@
                         Margin="0,8,0,0" />
             </VerticalStackLayout>
 
-            <!-- Error view -->
+            <!-- Error -->
             <VerticalStackLayout x:Name="ErrorView"
                                  IsVisible="False"
                                  VerticalOptions="Center"

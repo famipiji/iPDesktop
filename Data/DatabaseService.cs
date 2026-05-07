@@ -7,6 +7,8 @@ public class DatabaseService
 {
     private SQLiteAsyncConnection _db = null!;
 
+    public string GetDatabasePath() => Path.Combine(FileSystem.AppDataDirectory, "ipdesktop.db3");
+
     public async Task InitAsync()
     {
         if (_db is not null)

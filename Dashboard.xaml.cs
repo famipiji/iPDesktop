@@ -30,7 +30,7 @@ public partial class DashboardPage : ContentPage
         base.OnAppearing();
         await RefreshDocumentsAsync();
     }
-
+//upload docs button
     private async void OnUploadClicked(object? sender, EventArgs e)
     {
         try
@@ -98,7 +98,6 @@ public partial class DashboardPage : ContentPage
         _currentPage = 0;
         _documents.Clear();
         await LoadPageAsync();
-        await UpdateCountLabelAsync();
     }
 
     private async void OnLoadMore(object? sender, EventArgs e)
@@ -115,7 +114,6 @@ public partial class DashboardPage : ContentPage
         _currentPage = 0;
         _documents.Clear();
         await LoadPageAsync();
-        await UpdateCountLabelAsync();
     }
 
     private async Task LoadPageAsync()
@@ -129,11 +127,5 @@ public partial class DashboardPage : ContentPage
 
         foreach (var doc in page)
             _documents.Add(doc);
-    }
-
-    private async Task UpdateCountLabelAsync()
-    {
-        var count = await _db.GetDocumentCountAsync();
-        DocCountLabel.Text = $"{count:N0} document{(count == 1 ? "" : "s")}";
     }
 }
