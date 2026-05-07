@@ -1,31 +1,73 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="iPDesktop.MainPage">
+             x:Class="iPDesktop.MainPage"
+             Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a submarine number ten" />
+    <Grid BackgroundColor="{StaticResource Primary}">
 
-            <Label
-                Text="Hello, Welcome to iPDesktop!"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+        <Border StrokeShape="RoundRectangle 16"
+                Padding="32"
+                Margin="40"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                WidthRequest="360"
+                BackgroundColor="White"
+                Stroke="Transparent">
 
+            <VerticalStackLayout Spacing="20">
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Login" 
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </ScrollView>
+                <Label Text="iPDesktop"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}"
+                       HorizontalTextAlignment="Center" />
+
+                <Label Text="Sign in to continue"
+                       FontSize="14"
+                       TextColor="{StaticResource Gray500}"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,0,0,8" />
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Username" FontSize="13" TextColor="{StaticResource Gray600}" />
+                    <Entry x:Name="UsernameEntry"
+                           Placeholder="Enter username"
+                           ReturnType="Next"
+                           BackgroundColor="{StaticResource Gray100}"
+                           TextColor="{StaticResource Gray900}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Password" FontSize="13" TextColor="{StaticResource Gray600}" />
+                    <Entry x:Name="PasswordEntry"
+                           Placeholder="Enter password"
+                           IsPassword="True"
+                           ReturnType="Done"
+                           ReturnCommand="{Binding LoginCommand}"
+                           BackgroundColor="{StaticResource Gray100}"
+                           TextColor="{StaticResource Gray900}" />
+                </VerticalStackLayout>
+
+                <Label x:Name="ErrorLabel"
+                       Text=""
+                       TextColor="Red"
+                       FontSize="13"
+                       HorizontalTextAlignment="Center"
+                       IsVisible="False" />
+
+                <Button x:Name="LoginBtn"
+                        Text="Login"
+                        Clicked="OnLoginClicked"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        CornerRadius="8"
+                        HeightRequest="48"
+                        Margin="0,8,0,0" />
+
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
 
 </ContentPage>

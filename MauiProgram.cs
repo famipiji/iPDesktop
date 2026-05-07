@@ -21,6 +21,9 @@ public static class MauiProgram
 #endif
 
 		builder.Services.AddSingleton<DatabaseService>();
+		builder.Services.AddTransient<MainPage>();
+		builder.Services.AddTransient<DashboardPage>();
+		builder.Services.AddTransient<DocumentPreviewPage>();
 
 		return builder.Build();
 	}
