@@ -116,6 +116,70 @@ public partial class DashboardPage : ContentPage
         await LoadPageAsync();
     }
 
+    // ── Menu bar dropdowns ────────────────────────────────────────────────────
+
+    private void OnMenuFileClicked(object? sender, EventArgs e)
+        => ToggleDropdown(FileDropdown, (View)sender!);
+
+    private void OnMenuSettingsClicked(object? sender, EventArgs e)
+        => ToggleDropdown(SettingsDropdown, (View)sender!);
+
+    private void OnMenuHelpClicked(object? sender, EventArgs e)
+        => ToggleDropdown(HelpDropdown, (View)sender!);
+
+    private void ToggleDropdown(Border target, View anchor)
+    {
+        bool open = !target.IsVisible;
+        CloseAllDropdowns();
+        if (open)
+        {
+            target.Margin = new Thickness(anchor.X, 32, 0, 0);
+            target.IsVisible = true;
+            DropdownOverlay.IsVisible = true;
+        }
+    }
+
+    private void CloseAllDropdowns()
+    {
+        FileDropdown.IsVisible     = false;
+        SettingsDropdown.IsVisible = false;
+        HelpDropdown.IsVisible     = false;
+        DropdownOverlay.IsVisible  = false;
+    }
+
+    private void OnOverlayTapped(object? sender, TappedEventArgs e) => CloseAllDropdowns();
+
+    private async void OnDropdownUploadClicked(object? sender, EventArgs e)
+    {
+        CloseAllDropdowns();
+        await Task.Yield();
+        OnUploadClicked(sender, e);
+    }
+
+    private void OnDropdownExitClicked(object? sender, EventArgs e)
+    {
+        CloseAllDropdowns();
+        Application.Current?.Quit();
+    }
+
+    private async void OnDropdownPreferencesClicked(object? sender, EventArgs e)
+    {
+        CloseAllDropdowns();
+        await DisplayAlertAsync("Settings", "Preferences coming soon.", "OK");
+    }
+
+    private async void OnDropdownProfileClicked(object? sender, EventArgs e)
+    {
+        CloseAllDropdowns();
+        await Navigation.PushModalAsync(new ProfileSettingPage());
+    }
+
+    private async void OnDropdownAboutClicked(object? sender, EventArgs e)
+    {
+        CloseAllDropdowns();
+        await DisplayAlertAsync("About", "iPDesktop v1.0\nDocument viewer & OCR tool.", "OK");
+    }
+
     private async Task LoadPageAsync()
     {
         List<Document> page;

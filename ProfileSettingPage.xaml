@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="iPDesktop.ProfileSettingPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#99000000">
+
+    <!-- Centred dialog card -->
+    <Border HorizontalOptions="Center"
+            VerticalOptions="Center"
+            WidthRequest="720"
+            HeightRequest="530"
+            BackgroundColor="White"
+            StrokeThickness="1"
+            Stroke="#AAAAAA">
+        <Border.Shadow>
+            <Shadow Brush="Black" Offset="4,4" Radius="12" Opacity="0.35" />
+        </Border.Shadow>
+
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+            <!-- Title bar -->
+            <Grid Grid.Row="0" BackgroundColor="#ECECEC" Padding="8,5">
+                <Label Text="ProfileSettingDialog" FontSize="13" TextColor="Black" />
+            </Grid>
+
+            <!-- Tab strip -->
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto,*" BackgroundColor="#F0F0F0"
+                  RowDefinitions="Auto,1">
+
+                <Border Grid.Row="0" Grid.Column="0" x:Name="TabClassBorder"
+                        BackgroundColor="White" Stroke="#CCCCCC" StrokeThickness="1"
+                        Margin="4,4,0,0" Padding="0">
+                    <Label Text="Class" Padding="18,5" FontSize="12" TextColor="Black">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTabClassTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="1" x:Name="TabPropertiesBorder"
+                        BackgroundColor="#E0E0E0" Stroke="#CCCCCC" StrokeThickness="1"
+                        Margin="2,4,0,0" Padding="0">
+                    <Label Text="Properties" Padding="18,5" FontSize="12" TextColor="Black">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTabPropertiesTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="2" x:Name="TabValueListBorder"
+                        BackgroundColor="#E0E0E0" Stroke="#CCCCCC" StrokeThickness="1"
+                        Margin="2,4,0,0" Padding="0">
+                    <Label Text="Value List" Padding="18,5" FontSize="12" TextColor="Black">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTabValueListTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Border>
+
+                <!-- Bottom separator line -->
+                <BoxView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                         BackgroundColor="#CCCCCC" HeightRequest="1" />
+            </Grid>
+
+            <!-- Tab content -->
+            <Grid Grid.Row="2">
+
+                <!-- ── Class tab ───────────────────────────────────────── -->
+                <Grid x:Name="ClassTabContent" ColumnDefinitions="260,1,*" IsVisible="True">
+
+                    <!-- Left panel: class list -->
+                    <Grid Grid.Column="0" RowDefinitions="Auto,Auto,*" Padding="8,6,8,8">
+
+                        <HorizontalStackLayout Grid.Row="0" Spacing="6" Margin="0,0,0,6">
+                            <Button Text="Add Class"
+                                    Clicked="OnAddClassClicked"
+                                    BackgroundColor="#E0E0E0" TextColor="Black"
+                                    FontSize="12" HeightRequest="26" Padding="10,0" CornerRadius="2" />
+                            <Button Text="Remove"
+                                    Clicked="OnRemoveClassClicked"
+                                    BackgroundColor="#E0E0E0" TextColor="Black"
+                                    FontSize="12" HeightRequest="26" Padding="10,0" CornerRadius="2" />
+                        </HorizontalStackLayout>
+
+                        <!-- Headers -->
+                        <Grid Grid.Row="1" ColumnDefinitions="*,90"
+                              BackgroundColor="#E8E8E8" Padding="6,3">
+                            <Label Grid.Column="0" Text="Class Name" FontSize="12" FontAttributes="Bold" TextColor="Black" />
+                            <Label Grid.Column="1" Text="Class Type"  FontSize="12" FontAttributes="Bold" TextColor="Black" />
+                        </Grid>
+
+                        <!-- List -->
+                        <Border Grid.Row="2" StrokeThickness="1" Stroke="#CCCCCC" BackgroundColor="White">
+                            <CollectionView x:Name="ClassListView"
+                                            SelectionMode="Single"
+                                            SelectionChanged="OnClassSelectionChanged">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,90" Padding="6,5">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup Name="CommonStates">
+                                                    <VisualState Name="Normal">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor" Value="White" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                    <VisualState Name="Selected">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor" Value="#CCE8FF" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                            <Label Grid.Column="0" Text="{Binding Name}" FontSize="12" TextColor="Black" />
+                                            <Label Grid.Column="1" Text="{Binding Type}" FontSize="12" TextColor="Black" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Border>
+
+                    </Grid>
+
+                    <!-- Vertical separator -->
+                    <BoxView Grid.Column="1" BackgroundColor="#CCCCCC" />
+
+                    <!-- Right panel: form -->
+                    <Grid Grid.Column="2" RowDefinitions="Auto,*">
+
+                        <!-- Header -->
+                        <Border Grid.Row="0" BackgroundColor="#F0F0F0"
+                                StrokeThickness="0,0,0,1" Stroke="#CCCCCC" Padding="10,5">
+                            <Label x:Name="SelectedClassLabel"
+                                   Text="&lt;Not Selected&gt;"
+                                   FontSize="12" TextColor="#888888" FontAttributes="Italic" />
+                        </Border>
+
+                        <!-- Form fields -->
+                        <ScrollView Grid.Row="1">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,120,Auto"
+                                  Padding="12,8" RowSpacing="6">
+
+                                <!-- Class Mode -->
+                                <Grid Grid.Row="0" ColumnDefinitions="110,*">
+                                    <Label Grid.Column="0" Text="Class Mode" FontSize="12" TextColor="#555" VerticalOptions="Center" />
+                                    <Picker Grid.Column="1" x:Name="ClassModePicker"
+                                            FontSize="12" IsEnabled="False" BackgroundColor="#F0F0F0">
+                                        <Picker.Items>
+                                            <x:String>Offline</x:String>
+                                            <x:String>Online</x:String>
+                                        </Picker.Items>
+                                    </Picker>
+                                </Grid>
+
+                                <!-- Class ID -->
+                                <Grid Grid.Row="1" ColumnDefinitions="110,*">
+                                    <Label Grid.Column="0" Text="Class ID" FontSize="12" TextColor="#555" VerticalOptions="Center" />
+                                    <Entry Grid.Column="1" x:Name="ClassIdEntry"
+                                           FontSize="12" IsEnabled="False" BackgroundColor="#F0F0F0" />
+                                </Grid>
+
+                                <!-- Class Name -->
+                                <Grid Grid.Row="2" ColumnDefinitions="110,*">
+                                    <Label Grid.Column="0" Text="Class Name" FontSize="12" TextColor="#555" VerticalOptions="Center" />
+                                    <Entry Grid.Column="1" x:Name="ClassNameEntry"
+                                           FontSize="12" IsEnabled="False" BackgroundColor="#F0F0F0" />
+                                </Grid>
+
+                                <!-- Class Type -->
+                                <Grid Grid.Row="3" ColumnDefinitions="110,*">
+                                    <Label Grid.Column="0" Text="Class Type" FontSize="12" TextColor="#555" VerticalOptions="Center" />
+                                    <Picker Grid.Column="1" x:Name="ClassTypePicker"
+                                            FontSize="12" IsEnabled="False" BackgroundColor="#F0F0F0">
+                                        <Picker.Items>
+                                            <x:String>Not_Selected</x:String>
+                                            <x:String>Document</x:String>
+                                            <x:String>Folder</x:String>
+                                        </Picker.Items>
+                                    </Picker>
+                                </Grid>
+
+                                <!-- Properties label + buttons -->
+                                <Grid Grid.Row="4" ColumnDefinitions="110,Auto,Auto,*">
+                                    <Label Grid.Column="0" Text="Properties" FontSize="12" TextColor="#555" VerticalOptions="Center" />
+                                    <Button Grid.Column="1" x:Name="AddPropertiesBtn"
+                                            Text="Add Properties" Clicked="OnAddPropertyClicked"
+                                            BackgroundColor="#E0E0E0" TextColor="Black"
+                                            FontSize="11" HeightRequest="24" Padding="8,0" CornerRadius="2"
+                                            IsEnabled="False" />
+                                    <Button Grid.Column="2" x:Name="RemovePropertiesBtn"
+                                            Text="Remove Properties" Clicked="OnRemovePropertyClicked"
+                                            BackgroundColor="#E0E0E0" TextColor="Black"
+                                            FontSize="11" HeightRequest="24" Padding="8,0" CornerRadius="2"
+                                            Margin="4,0,0,0" IsEnabled="False" />
+                                </Grid>
+
+                                <!-- Properties list box -->
+                                <Border Grid.Row="5"
+                                        Margin="110,0,0,0"
+                                        HeightRequest="90"
+                                        StrokeThickness="1" Stroke="#CCCCCC"
+                                        BackgroundColor="White">
+                                    <CollectionView x:Name="PropertiesListView" SelectionMode="Single">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Label Text="{Binding .}" FontSize="12" Padding="4,2" TextColor="Black" />
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </Border>
+
+                                <!-- Export Setting -->
+                                <Grid Grid.Row="6" ColumnDefinitions="110,Auto" VerticalOptions="End">
+                                    <Label Grid.Column="0" Text="Export Setting" FontSize="12" TextColor="#555" VerticalOptions="Center" />
+                                    <Button Grid.Column="1" x:Name="SetupExportBtn"
+                                            Text="Setup Export" Clicked="OnSetupExportClicked"
+                                            BackgroundColor="#E0E0E0" TextColor="#999999"
+                                            FontSize="11" HeightRequest="24" Padding="8,0" CornerRadius="2"
+                                            IsEnabled="False" />
+                                </Grid>
+
+                            </Grid>
+                        </ScrollView>
+
+                    </Grid>
+
+                </Grid>
+
+                <!-- ── Properties tab ──────────────────────────────────── -->
+                <Label x:Name="PropertiesTabContent"
+                       Text="Properties configuration coming soon."
+                       FontSize="14" TextColor="#888888"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       IsVisible="False" />
+
+                <!-- ── Value List tab ──────────────────────────────────── -->
+                <Label x:Name="ValueListTabContent"
+                       Text="Value list configuration coming soon."
+                       FontSize="14" TextColor="#888888"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       IsVisible="False" />
+
+            </Grid>
+
+            <!-- Bottom buttons -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,Auto,Auto"
+                  BackgroundColor="#F0F0F0" Padding="8,6">
+                <Button Grid.Column="1"
+                        Text="Save &amp; Close"
+                        Clicked="OnSaveCloseClicked"
+                        BackgroundColor="#E0E0E0" TextColor="Black"
+                        FontSize="12" HeightRequest="28" Padding="14,0" CornerRadius="2"
+                        Margin="0,0,8,0" />
+                <Button Grid.Column="2"
+                        Text="Close"
+                        Clicked="OnCloseClicked"
+                        BackgroundColor="#E0E0E0" TextColor="Black"
+                        FontSize="12" HeightRequest="28" Padding="14,0" CornerRadius="2" />
+            </Grid>
+
+        </Grid>
+    </Border>
+
+</ContentPage>

@@ -4,145 +4,271 @@
              x:Class="iPDesktop.DashboardPage"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,Auto,*" BackgroundColor="{StaticResource Gray100}">
+    <Grid BackgroundColor="{StaticResource Gray100}">
 
-        <!-- Top bar -->
-        <Grid Grid.Row="0"
-              BackgroundColor="{StaticResource Primary}"
-              Padding="16,12"
-              ColumnDefinitions="Auto,*,Auto">
+        <!-- ── Main content ─────────────────────────────────────────────── -->
+        <Grid RowDefinitions="Auto,Auto,Auto,*">
 
-            <Button Grid.Column="0"
-                    x:Name="UploadBtn"
-                    Text="+ Upload"
-                    Clicked="OnUploadClicked"
-                    BackgroundColor="White"
-                    TextColor="{StaticResource Primary}"
-                    FontAttributes="Bold"
-                    CornerRadius="8"
-                    HeightRequest="40"
-                    Padding="16,0" />
-
-            <Label Grid.Column="1"
-                   Text="iPDesktop"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center" />
-
-        </Grid>
-
-        <!-- Search bar -->
-        <Grid Grid.Row="1"
-              BackgroundColor="White"
-              Padding="16,10"
-              ColumnDefinitions="*,Auto">
-
-            <Entry Grid.Column="0"
-                   x:Name="SearchEntry"
-                   Placeholder="Search documents..."
-                   TextChanged="OnSearchTextChanged"
-                   BackgroundColor="{StaticResource Gray100}"
-                   TextColor="{StaticResource Gray900}"
-                   VerticalOptions="Center" />
-
-            <Label Grid.Column="1"
-                   x:Name="StatusLabel"
-                   Text=""
-                   FontSize="12"
-                   TextColor="{StaticResource Gray500}"
-                   VerticalOptions="Center"
-                   Margin="12,0,0,0" />
-        </Grid>
-
-        <!-- Document list -->
-        <Grid Grid.Row="2" RowDefinitions="Auto,*">
-
-            <!-- Column headers -->
+            <!-- Menu bar -->
             <Grid Grid.Row="0"
-                  ColumnDefinitions="*,80,100,130"
-                  BackgroundColor="White"
-                  Padding="16,8"
-                  Margin="0,1,0,0">
-                <Label Grid.Column="0" Text="File Name" FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" />
-                <Label Grid.Column="1" Text="Type"      FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center" />
-                <Label Grid.Column="2" Text="Size"      FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center" />
-                <Label Grid.Column="3" Text="Uploaded"  FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center" />
+                  BackgroundColor="#F0F0F0"
+                  Padding="4,2"
+                  ColumnDefinitions="Auto,Auto,Auto,*">
+
+                <Button Grid.Column="0"
+                        Text="File"
+                        Clicked="OnMenuFileClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="Black"
+                        FontSize="13"
+                        Padding="10,4"
+                        HeightRequest="28" />
+
+                <Button Grid.Column="1"
+                        Text="Settings"
+                        Clicked="OnMenuSettingsClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="Black"
+                        FontSize="13"
+                        Padding="10,4"
+                        HeightRequest="28" />
+
+                <Button Grid.Column="2"
+                        Text="Help"
+                        Clicked="OnMenuHelpClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="Black"
+                        FontSize="13"
+                        Padding="10,4"
+                        HeightRequest="28" />
+
             </Grid>
 
-            <!-- Rows -->
-            <CollectionView Grid.Row="1"
-                            x:Name="DocumentsCollection"
-                            SelectionMode="Single"
-                            SelectionChanged="OnDocumentSelected"
-                            RemainingItemsThreshold="10"
-                            RemainingItemsThresholdReached="OnLoadMore"
-                            BackgroundColor="{StaticResource Gray100}">
+            <!-- Top bar -->
+            <Grid Grid.Row="1"
+                  BackgroundColor="{StaticResource Primary}"
+                  Padding="16,12"
+                  ColumnDefinitions="Auto,*,Auto">
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid ColumnDefinitions="*,80,100,130"
-                              Padding="16,12"
-                              Margin="0,1,0,0"
-                              BackgroundColor="White">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup Name="CommonStates">
-                                    <VisualState Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState Name="Selected">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="{StaticResource Secondary}" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
+                <Button Grid.Column="0"
+                        x:Name="UploadBtn"
+                        Text="+ Upload"
+                        Clicked="OnUploadClicked"
+                        BackgroundColor="White"
+                        TextColor="{StaticResource Primary}"
+                        FontAttributes="Bold"
+                        CornerRadius="8"
+                        HeightRequest="40"
+                        Padding="16,0" />
 
-                            <Label Grid.Column="0"
-                                   Text="{Binding FileName}"
-                                   FontSize="14"
-                                   TextColor="{StaticResource Gray900}"
-                                   LineBreakMode="TailTruncation" />
+                <Label Grid.Column="1"
+                       Text="iPDesktop"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
 
-                            <Label Grid.Column="1"
-                                   Text="{Binding FileType}"
-                                   FontSize="13"
-                                   TextColor="{StaticResource Primary}"
-                                   HorizontalTextAlignment="Center"
-                                   FontAttributes="Bold" />
+            </Grid>
 
-                            <Label Grid.Column="2"
-                                   Text="{Binding SizeDisplay}"
-                                   FontSize="13"
-                                   TextColor="{StaticResource Gray500}"
+            <!-- Search bar -->
+            <Grid Grid.Row="2"
+                  BackgroundColor="White"
+                  Padding="16,10"
+                  ColumnDefinitions="*,Auto">
+
+                <Entry Grid.Column="0"
+                       x:Name="SearchEntry"
+                       Placeholder="Search documents..."
+                       TextChanged="OnSearchTextChanged"
+                       BackgroundColor="{StaticResource Gray100}"
+                       TextColor="{StaticResource Gray900}"
+                       VerticalOptions="Center" />
+
+                <Label Grid.Column="1"
+                       x:Name="StatusLabel"
+                       Text=""
+                       FontSize="12"
+                       TextColor="{StaticResource Gray500}"
+                       VerticalOptions="Center"
+                       Margin="12,0,0,0" />
+            </Grid>
+
+            <!-- Document list -->
+            <Grid Grid.Row="3" RowDefinitions="Auto,*">
+
+                <!-- Column headers -->
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*,80,100,130"
+                      BackgroundColor="White"
+                      Padding="16,8"
+                      Margin="0,1,0,0">
+                    <Label Grid.Column="0" Text="File Name" FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" />
+                    <Label Grid.Column="1" Text="Type"      FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="2" Text="Size"      FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="3" Text="Uploaded"  FontAttributes="Bold" FontSize="13" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center" />
+                </Grid>
+
+                <!-- Rows -->
+                <CollectionView Grid.Row="1"
+                                x:Name="DocumentsCollection"
+                                SelectionMode="Single"
+                                SelectionChanged="OnDocumentSelected"
+                                RemainingItemsThreshold="10"
+                                RemainingItemsThresholdReached="OnLoadMore"
+                                BackgroundColor="{StaticResource Gray100}">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="*,80,100,130"
+                                  Padding="16,12"
+                                  Margin="0,1,0,0"
+                                  BackgroundColor="White">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="White" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="{StaticResource Secondary}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Label Grid.Column="0"
+                                       Text="{Binding FileName}"
+                                       FontSize="14"
+                                       TextColor="{StaticResource Gray900}"
+                                       LineBreakMode="TailTruncation" />
+
+                                <Label Grid.Column="1"
+                                       Text="{Binding FileType}"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Primary}"
+                                       HorizontalTextAlignment="Center"
+                                       FontAttributes="Bold" />
+
+                                <Label Grid.Column="2"
+                                       Text="{Binding SizeDisplay}"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Gray500}"
+                                       HorizontalTextAlignment="Center" />
+
+                                <Label Grid.Column="3"
+                                       Text="{Binding UploadedAt, StringFormat='{0:dd MMM yyyy}'}"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Gray500}"
+                                       HorizontalTextAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12" Margin="0,60,0,0">
+                            <Label Text="No documents yet"
+                                   FontSize="16"
+                                   TextColor="{StaticResource Gray400}"
                                    HorizontalTextAlignment="Center" />
-
-                            <Label Grid.Column="3"
-                                   Text="{Binding UploadedAt, StringFormat='{0:dd MMM yyyy}'}"
+                            <Label Text="Click '+ Upload' to add your first document."
                                    FontSize="13"
-                                   TextColor="{StaticResource Gray500}"
+                                   TextColor="{StaticResource Gray300}"
                                    HorizontalTextAlignment="Center" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
 
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12" Margin="0,60,0,0">
-                        <Label Text="No documents yet"
-                               FontSize="16"
-                               TextColor="{StaticResource Gray400}"
-                               HorizontalTextAlignment="Center" />
-                        <Label Text="Click '+ Upload' to add your first document."
-                               FontSize="13"
-                               TextColor="{StaticResource Gray300}"
-                               HorizontalTextAlignment="Center" />
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
-            </CollectionView>
         </Grid>
+
+        <!-- ── Tap-outside overlay (below menu bar, dismisses open dropdown) ── -->
+        <Grid x:Name="DropdownOverlay"
+              IsVisible="False"
+              BackgroundColor="Transparent"
+              VerticalOptions="Fill"
+              Margin="0,32,0,0">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </Grid.GestureRecognizers>
+        </Grid>
+
+        <!-- ── File dropdown ─────────────────────────────────────────────── -->
+        <Border x:Name="FileDropdown"
+                IsVisible="False"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                BackgroundColor="White"
+                StrokeThickness="1"
+                Stroke="#CCCCCC"
+                MinimumWidthRequest="150">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="2,2" Radius="6" Opacity="0.15" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="0">
+                <Label Text="Upload" FontSize="13" TextColor="Black" Padding="14,8">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDropdownUploadClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <BoxView HeightRequest="1" Color="#EEEEEE" />
+                <Label Text="Exit" FontSize="13" TextColor="Black" Padding="14,8">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDropdownExitClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- ── Settings dropdown ─────────────────────────────────────────── -->
+        <Border x:Name="SettingsDropdown"
+                IsVisible="False"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                BackgroundColor="White"
+                StrokeThickness="1"
+                Stroke="#CCCCCC"
+                MinimumWidthRequest="150">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="2,2" Radius="6" Opacity="0.15" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="0">
+                <Label Text="Profile Configuration" FontSize="13" TextColor="Black" Padding="14,8">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDropdownProfileClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <BoxView HeightRequest="1" Color="#EEEEEE" />
+                <Label Text="Preferences" FontSize="13" TextColor="Black" Padding="14,8">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDropdownPreferencesClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- ── Help dropdown ─────────────────────────────────────────────── -->
+        <Border x:Name="HelpDropdown"
+                IsVisible="False"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                BackgroundColor="White"
+                StrokeThickness="1"
+                Stroke="#CCCCCC"
+                MinimumWidthRequest="150">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="2,2" Radius="6" Opacity="0.15" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="0">
+                <Label Text="About" FontSize="13" TextColor="Black" Padding="14,8">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDropdownAboutClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </VerticalStackLayout>
+        </Border>
 
     </Grid>
 
